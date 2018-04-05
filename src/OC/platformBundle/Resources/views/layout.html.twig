@@ -1,0 +1,32 @@
+{# src/OC/platformBundle/Resources/views/layout.html.twig #}
+
+{% extends "CoreBundle::layout.html.twig" %}
+
+{% block title %}
+    {{ parent() }} -Annonces
+{% endblock %}
+
+
+{% block title_banner %}
+    {{ parent() }} - Plateforme des annonces
+{% endblock %}
+
+{% block navigation %}
+    Les annonces
+{% endblock %}
+{% block menu_add %}
+    <li><a href="{{ path('oc_platform_add') }}">Ajouter une annonce</a></li>
+{% endblock %}
+
+
+{% block body %}
+    <h1>Annonces</h1>
+    {% for message in app.session.flashbag.get('info') %}
+        <p> {{ message }} </p>
+    {% endfor %}
+    <hr>
+
+    {%block ocplateform_body %}
+
+    {% endblock %}
+{% endblock %}

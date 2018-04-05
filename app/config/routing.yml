@@ -1,0 +1,7 @@
+core:
+    resource: "@CoreBundle/Resources/config/routing.yml"
+    prefix:   /
+
+o_cplatform:
+    resource: "@OCplatformBundle/Resources/config/routing.yml"
+    prefix:   /platform

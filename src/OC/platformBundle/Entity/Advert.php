@@ -1,0 +1,421 @@
+<?php
+
+namespace OC\platformBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * Advert
+ *
+ * @ORM\Table(name="advert")
+ * @ORM\Entity(repositoryClass="OC\platformBundle\Repository\AdvertRepository")
+ */
+class Advert {
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime", nullable=true)
+     */
+    private $date;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=255)
+     */
+    private $title;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="author", type="string", length=255)
+     */
+    private $author;
+
+    /**
+     *
+     * @var string 
+     * @ORM\Column(name="content",type="string", length=255)
+     * 
+     * 
+     */
+    private $content;
+
+    /**
+     *
+     * @var boolean
+     * @ORM\Column(name="published", type="boolean") 
+     * 
+     */
+    private $published = true;
+
+    /**
+     * @ORM\OneToOne(targetEntity="OC\platformBundle\Entity\Image", cascade={"persist"}) 
+     * 
+     * 
+     */
+    private $image;
+
+    /**
+     *
+     * @var type 
+     * 
+     * @ORM\ManyToMany(targetEntity="OC\platformBundle\Entity\Category",cascade={"persist"})
+     * ^ORM\JoinTable(name="advert_category")
+     * 
+     */
+    private $categories;
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="OC\platformBundle\Entity\Application", mappedBy="advert") 
+     * 
+     * 
+     */
+    private $applications;
+
+    /**
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true) 
+     * 
+     */
+    private $updatedAt;
+
+    /**
+     * 
+     * @ORM\Column(name="nb_applications", type="integer") 
+     * 
+     */
+    private $nb_application = 0;
+
+    /**
+     *  @Gedmo\Slug(fields={"title"})
+     *  @ORM\Column(name="slug",type="string",length=255,unique=true)
+     * 
+     */
+    private $slug;
+
+    /**
+     * Get id.
+     *
+     * @return int
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set date.
+     *
+     * @param \DateTime $date
+     *
+     * @return Advert
+     */
+    public function setDate($date) {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date.
+     *
+     * @return \DateTime
+     */
+    public function getDate() {
+        return $this->date;
+    }
+
+    /**
+     * Set title.
+     *
+     * @param string $title
+     *
+     * @return Advert
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title.
+     *
+     * @return string
+     */
+    public function getTitle() {
+        return $this->title;
+    }
+
+    /**
+     * Set author.
+     *
+     * @param string $author
+     *
+     * @return Advert
+     */
+    public function setAuthor($author) {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get author.
+     *
+     * @return string
+     */
+    public function getAuthor() {
+        return $this->author;
+    }
+
+    /**
+     * Set content.
+     *
+     * @param string $content
+     *
+     * @return Advert
+     */
+    public function setContent($content) {
+        $this->content = $content;
+
+        return $this;
+    }
+
+    /**
+     * Get content.
+     *
+     * @return string
+     */
+    public function getContent() {
+        return $this->content;
+    }
+
+    /**
+     * Set image.
+     *
+     * @param \OC\platformBundle\Entity\Image|null $image
+     *
+     * @return Advert
+     */
+    public function setImage(\OC\platformBundle\Entity\Image $image = null) {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image.
+     *
+     * @return \OC\platformBundle\Entity\Image|null
+     */
+    public function getImage() {
+        return $this->image;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->categories = new ArrayCollection();
+        $this->date = new \Datetime();
+        $this->categories = new ArrayCollection();
+        $this->applications = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function updateDate() {
+        $this->setUpdatedAt(new \Datetime());
+    }
+
+    public function increaseApplication() {
+        $this->nb_application++;
+    }
+
+    public function decreaseApplication() {
+        $this->nb_application--;
+    }
+
+    /**
+     * Add category.
+     *
+     * @param \OC\PlatformBundle\Entity\Category $category
+     *
+     * @return Advert
+     */
+    public function addCategory(Category $category) {
+        $this->categories[] = $category;
+    }
+
+    /**
+     * Remove category.
+     *
+     * @param \OC\PlatformBundle\Entity\Category $category
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeCategory(Category $category) {
+        return $this->categories->removeElement($category);
+    }
+
+    /**
+     * Get categories.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCategories() {
+        return $this->categories;
+    }
+
+    /**
+     * @param Application $application
+     */
+    public function addApplication(Application $application) {
+        $this->applications[] = $application;
+        // On lie l'annonce à la candidature
+        $application->setAdvert($this);
+    }
+
+    /**
+     * @param Application $application
+     */
+    public function removeApplication(Application $application) {
+        $this->applications->removeElement($application);
+    }
+//
+//    /**
+//     * @param \DateTime $updatedAt
+//     */
+//    public function setUpdatedAt(\Datetime $updatedAt = null) {
+//        $this->updatedAt = $updatedAt;
+//    }
+//
+//    /**
+//     * @param integer $nbApplications
+//     */
+//    public function setNbApplications($nbApplications) {
+//        $this->nbApplications = $nbApplications;
+//    }
+
+
+    /**
+     * Set published.
+     *
+     * @param bool $published
+     *
+     * @return Advert
+     */
+    public function setPublished($published)
+    {
+        $this->published = $published;
+
+        return $this;
+    }
+
+    /**
+     * Get published.
+     *
+     * @return bool
+     */
+    public function getPublished()
+    {
+        return $this->published;
+    }
+
+    /**
+     * Set updatedAt.
+     *
+     * @param \DateTime|null $updatedAt
+     *
+     * @return Advert
+     */
+    public function setUpdatedAt($updatedAt = null)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt.
+     *
+     * @return \DateTime|null
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set nbApplication.
+     *
+     * @param int $nbApplication
+     *
+     * @return Advert
+     */
+    public function setNbApplication($nbApplication)
+    {
+        $this->nb_application = $nbApplication;
+
+        return $this;
+    }
+
+    /**
+     * Get nbApplication.
+     *
+     * @return int
+     */
+    public function getNbApplication()
+    {
+        return $this->nb_application;
+    }
+
+    /**
+     * Set slug.
+     *
+     * @param string $slug
+     *
+     * @return Advert
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug.
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Get applications.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getApplications()
+    {
+        return $this->applications;
+    }
+}

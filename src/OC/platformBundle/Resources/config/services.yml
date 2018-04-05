@@ -1,0 +1,20 @@
+services:
+#    o_cplatform.example:
+#        class: OC\platformBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+    oc_platform.antispam:
+        class: OC\platformBundle\Antispam\OCAntispam
+        arguments:
+            - "@mailer"
+            - %locale%
+            - 50
+    
+    oc_service_advert_repository:
+        class: OC\platformBundle\Repository\AdvertRepository
+    
+    oc_platform.purger.advert:
+        class : OC\platformBundle\Purge\OCPurger
+        arguments:
+            - "@doctrine"
+            - 30
